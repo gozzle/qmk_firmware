@@ -1,7 +1,7 @@
 # pragma once
 
 // set time held before Mod-Tab key sends mod code
-#define TAPPING_TERM 150
+#define TAPPING_TERM 200
 
 // permissive hold: if holding down a Mod-Tap key while pressing another, it
 // acts a a mod, even within the tapping term

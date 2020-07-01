@@ -5,8 +5,6 @@
 #define GREEN {RGB_GREEN}
 #define YELLOW {RGB_YELLOW}
 
-bool is_caps_lock_active;
-
 enum alt_layers {
     _QWERTY = 0,
     _FUNCTIONS,
@@ -105,7 +103,6 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-    is_caps_lock_active = false;
 };
 
 // Runs constantly in the background, in a loop.
@@ -120,11 +117,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint32_t key_timer;
 
     switch (keycode) {
-        case KC_CAPS:
-            if (record ->event.pressed) {
-                is_caps_lock_active = !is_caps_lock_active;
-            }
-            return true;
         case U_T_AUTO:
             if (record->event.pressed && MODS_SHIFT && MODS_CTRL) {
                 TOGGLE_FLAG_AND_PRINT(usb_extra_manual, "USB extra port manual mode");
@@ -203,7 +195,7 @@ void set_layer_color(int layer) {
         // skip key leds
         min_led = 67;
     } else if (rgb_matrix_get_flags() == LED_FLAG_KEYLIGHT) {
-        max_led = 66;
+        max_led = 67;
     }
 
     // skip layer _QWERTY for non_solid effects
@@ -230,56 +222,36 @@ void set_layer_color(int layer) {
 // this works for SOLID mode, and keylight/backlight only modes
 // but is broken for any non-solid mode (calling the default doesn't work)
 void set_capslock_color(void) {
-    RGB on_rgb;
-    RGB off_rgb;
+
+    led_flags_t flags = rgb_matrix_get_flags();
+    float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
+
+    RGB on;
+    RGB off;
 
     switch(rgb_matrix_get_mode()) {
         case RGB_MATRIX_SOLID_COLOR:
-
-          off_rgb.r = RGB_SOLID_VALUE_RED;
-          off_rgb.g = RGB_SOLID_VALUE_GREEN;
-          off_rgb.b = RGB_SOLID_VALUE_BLUE;
-
-          // if solid color setting is RGB_WHITE then chose red;
-          // otherwise take "opposite" color
-          if (off_rgb.r == 255 && off_rgb.b == 255 && off_rgb.g == 255) {
-              on_rgb.r = 255;
-              on_rgb.g = 0;
-              on_rgb.b = 0;
+          if (HAS_FLAGS(flags, LED_FLAG_KEYLIGHT)) {
+              on.r = f * 255;
+              on.g = on.b = 0;
+              off.r = f * RGB_SOLID_VALUE_RED;
+              off.g = f * RGB_SOLID_VALUE_GREEN;
+              off.b = f * RGB_SOLID_VALUE_BLUE;
           } else {
-              on_rgb.r = 255 - on_rgb.r;
-              on_rgb.g = 255 - on_rgb.g;
-              on_rgb.b = 255 - on_rgb.b;
+              on.r = on.g = on.b = f * 255;
+              off.r = off.g = off.b = 0;
           }
           break;
         default:
-          on_rgb.r = on_rgb.g = on_rgb.b = 255;
-          off_rgb.r = off_rgb.g = off_rgb.b = 0;
+          // TODO find a way to make this the "negative" of the current color
+          on.r = on.g = on.b = f * 255;
+          off.r = off.g = off.b = 0;
     }
 
-
-    led_flags_t flags = rgb_matrix_get_flags();
-
-    // prevent flicker if we're in keylight or underglow modes
-    if (flags == LED_FLAG_KEYLIGHT || flags == LED_FLAG_UNDERGLOW) {
-        // capslock will either be white or off in these modes
-        if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
-            rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on_rgb.r, on_rgb.g, on_rgb.b);
-        } else {
-            rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, off_rgb.r, off_rgb.g, off_rgb.b);
-        }
-    } else if (flags != LED_FLAG_NONE) {
-        // capslock will either be red or white in solid colour mode
-        if (rgb_matrix_get_mode() == RGB_MATRIX_SOLID_COLOR) {
-            if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
-                rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on_rgb.r, on_rgb.g, on_rgb.b);
-            } else {
-                rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, off_rgb.r, off_rgb.g, off_rgb.b);
-            }
-        } else {
-            // use Alt's default otherwise
-            led_matrix_indicators();
-        }
+    if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
+        rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on.r, on.g, on.b);
+    } else {
+        rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, off.r, off.g, off.b);
     }
 }
 
