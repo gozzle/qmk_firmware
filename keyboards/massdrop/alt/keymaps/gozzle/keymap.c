@@ -254,7 +254,7 @@ void set_capslock_color(void) {
         default:
           // TODO find a way to make this the "negative" of the current color
           on.r = on.g = on.b = f * 255;
-          off.r = off.g = off.b = 0;
+          off = hsv_to_rgb(rgb_matrix_config.hsv);
     }
 
     if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
