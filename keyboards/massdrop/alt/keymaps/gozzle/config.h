@@ -74,6 +74,3 @@
 // startup options
 #define RGB_MATRIX_KEYPRESSES         // reacts to keypresses
 #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR // Sets the default mode, if none has been set
-#define RGB_SOLID_VALUE_RED 255
-#define RGB_SOLID_VALUE_BLUE 255
-#define RGB_SOLID_VALUE_GREEN 255

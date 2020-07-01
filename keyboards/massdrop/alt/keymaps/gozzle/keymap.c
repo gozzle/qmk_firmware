@@ -5,6 +5,10 @@
 #define GREEN {RGB_GREEN}
 #define YELLOW {RGB_YELLOW}
 
+#define DEFAULT_SOLID RGB_WHITE
+
+RGB solid_rgb_value;
+
 enum alt_layers {
     _QWERTY = 0,
     _FUNCTIONS,
@@ -58,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef _______
 #undef _______
-#define _______ {RGB_SOLID_VALUE_RED, RGB_SOLID_VALUE_BLUE, RGB_SOLID_VALUE_GREEN}
+#define _______ {DEFAULT_SOLID}
 
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     [_QWERTY] = {
@@ -103,6 +107,10 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
+    uint8_t default_solid_arr[] = {DEFAULT_SOLID};
+    solid_rgb_value.r = default_solid_arr[0];
+    solid_rgb_value.g = default_solid_arr[1];
+    solid_rgb_value.b = default_solid_arr[2];
 };
 
 // Runs constantly in the background, in a loop.
@@ -113,6 +121,7 @@ void matrix_scan_user(void) {
 #define MODS_CTRL  (get_mods() & MOD_BIT(KC_LCTL) || get_mods() & MOD_BIT(KC_RCTRL))
 #define MODS_ALT  (get_mods() & MOD_BIT(KC_LALT) || get_mods() & MOD_BIT(KC_RALT))
 
+// TODO add the ability to change the solid background color
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint32_t key_timer;
 
@@ -234,9 +243,9 @@ void set_capslock_color(void) {
           if (HAS_FLAGS(flags, LED_FLAG_KEYLIGHT)) {
               on.r = f * 255;
               on.g = on.b = 0;
-              off.r = f * RGB_SOLID_VALUE_RED;
-              off.g = f * RGB_SOLID_VALUE_GREEN;
-              off.b = f * RGB_SOLID_VALUE_BLUE;
+              off.r = f * solid_rgb_value.r;
+              off.g = f * solid_rgb_value.g;
+              off.b = f * solid_rgb_value.b;
           } else {
               on.r = on.g = on.b = f * 255;
               off.r = off.g = off.b = 0;
