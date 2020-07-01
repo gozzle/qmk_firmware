@@ -1,44 +1,46 @@
 #include QMK_KEYBOARD_H
 
+#define RED {RGB_RED}
+#define BLUE {RGB_BLUE}
+#define GREEN {RGB_GREEN}
+#define YELLOW {RGB_YELLOW}
+
+bool is_caps_lock_active;
+
+enum alt_layers {
+    _QWERTY = 0,
+    _FUNCTIONS,
+    _NUMPAD
+};
+
 enum alt_keycodes {
-    L_BRI = SAFE_RANGE, //LED Brightness Increase                                   //Working
-    L_BRD,              //LED Brightness Decrease                                   //Working
-    L_PTN,              //LED Pattern Select Next                                   //Working
-    L_PTP,              //LED Pattern Select Previous                               //Working
-    L_PSI,              //LED Pattern Speed Increase                                //Working
-    L_PSD,              //LED Pattern Speed Decrease                                //Working
-    L_T_MD,             //LED Toggle Mode                                           //Working
-    L_T_ONF,            //LED Toggle On / Off                                       //Broken
-    L_ON,               //LED On                                                    //Broken
-    L_OFF,              //LED Off                                                   //Broken
-    L_T_BR,             //LED Toggle Breath Effect                                  //Working
-    L_T_PTD,            //LED Toggle Scrolling Pattern Direction                    //Working
-    U_T_AGCR,           //USB Toggle Automatic GCR control                          //Working
-    DBG_TOG,            //DEBUG Toggle On / Off                                     //
-    DBG_MTRX,           //DEBUG Toggle Matrix Prints                                //
-    DBG_KBD,            //DEBUG Toggle Keyboard Prints                              //
-    DBG_MOU,            //DEBUG Toggle Mouse Prints                                 //
-    MD_BOOT             //Restart into bootloader after hold timeout                //Working
+    U_T_AUTO = SAFE_RANGE, //USB Extra Port Toggle Auto Detect / Always Active
+    U_T_AGCR,              //USB Toggle Automatic GCR control
+    DBG_TOG,               //DEBUG Toggle On / Off
+    DBG_MTRX,              //DEBUG Toggle Matrix Prints
+    DBG_KBD,               //DEBUG Toggle Keyboard Prints
+    DBG_MOU,               //DEBUG Toggle Mouse Prints
+    MD_BOOT,               //Restart into bootloader after hold timeout
 };
 
 keymap_config_t keymap_config;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT(
+    [_QWERTY] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP, \
         LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_GRV,           KC_UP,   MO(1),   \
         KC_LCTL, KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RGUI, TG(2),   KC_LEFT, KC_DOWN, KC_RGHT  \
     ),
-    [1] = LAYOUT(
-        _______,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12, _______, KC_MUTE, \
-        L_T_BR,   L_PSD,   L_BRI,   L_PSI,   _______, _______, _______, _______, U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS,_______, KC_VOLU, \
-        _______, L_PTP,   L_BRD,   L_PTN,    _______, _______, _______, _______, _______, _______, _______, _______,         _______, KC_VOLD, \
-        _______, L_T_MD,  L_T_ONF, L_T_PTD,  _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,         KC_PGUP, _______, \
-        _______, _______, _______,                            _______,                            _______, _______, KC_HOME, KC_PGDN, KC_END   \
+    [_FUNCTIONS] = LAYOUT(
+        _______,  KC_F1,   KC_F2,    KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12, _______, KC_MUTE, \
+        _______, RGB_SPD,  RGB_VAI,  RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS,_______, KC_VOLU, \
+        _______, RGB_RMOD, RGB_VAD,  RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,         _______, KC_VOLD, \
+        _______, RGB_TOG,  _______, _______,  _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,         KC_PGUP, _______, \
+        _______, _______,  _______,                             _______,                            _______, _______, KC_HOME, KC_PGDN, KC_END   \
     ),
-    [2] = LAYOUT(
+    [_NUMPAD] = LAYOUT(
         _______, _______, _______, _______, _______, _______, _______, _______, KC_PAST, _______, _______, KC_PMNS, KC_PPLS, _______, _______, \
         _______, _______, _______, _______, _______, _______, KC_P7,   KC_P8,   KC_P9,   _______, _______, _______, _______, _______, _______, \
         _______, _______, _______, _______, _______, _______, KC_P4,   KC_P5,   KC_P6,   _______, _______, _______,          KC_PENT, _______, \
@@ -56,13 +58,54 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     */
 };
 
-// Taken from qmk_firmware/tmk_core/protocol/arm_atsam/led_matrix_programs.c
-#define LED_ANIMATION_ID_WHITE 7
+#ifdef _______
+#undef _______
+#define _______ {RGB_SOLID_VALUE_RED, RGB_SOLID_VALUE_BLUE, RGB_SOLID_VALUE_GREEN}
+
+const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
+    [_QWERTY] = {
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+        _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, \
+        // Underglow LEDs
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______
+    },
+    [_FUNCTIONS] = {
+        _______, RED    ,   RED    ,   RED    ,   RED    ,   RED    ,    RED    ,    RED    , RED    , RED    , RED    ,   RED    , RED    , _______, BLUE    , \
+        _______, GREEN    , GREEN    , GREEN    , GREEN    , GREEN    ,  _______,    _______, YELLOW    ,_______,BLUE    , BLUE    , BLUE    , _______, BLUE    , \
+        _______, GREEN    , GREEN    , GREEN    , GREEN    , GREEN    ,  _______,    _______, _______, _______, _______, _______,          _______, BLUE    , \
+        _______, GREEN    , _______,   _______,   _______,   YELLOW    , YELLOW    , _______, _______, _______, _______, _______,          BLUE    , _______, \
+        _______, _______, _______,                            _______,                            _______, _______, BLUE    , BLUE    , BLUE    , \
+        // Underglow LEDs
+        BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , \
+        BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , \
+        BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE
+    },
+    [_NUMPAD] = {
+        _______, _______, _______, _______, _______, _______, _______, _______, BLUE    ,_______, _______, BLUE    ,BLUE    ,_______, _______, \
+        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , _______, _______, _______,          BLUE    ,_______, \
+        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , RED    , BLUE    ,_______,          _______, _______, \
+        _______, _______, _______,                            RED    ,                            _______, YELLOW    ,_______,_______,_______, \
+        // Underglow LEDs
+        GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , \
+        GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , \
+        GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN
+    }
+};
+
+#undef _______
+#define _______ KC_TRANS
+#endif
+
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-    // Set the default LED effect to be solid white
-    led_animation_id = LED_ANIMATION_ID_WHITE;
+    is_caps_lock_active = false;
 };
 
 // Runs constantly in the background, in a loop.
@@ -77,80 +120,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint32_t key_timer;
 
     switch (keycode) {
-        case L_BRI:
-            if (record->event.pressed) {
-                if (LED_GCR_STEP > LED_GCR_MAX - gcr_desired) gcr_desired = LED_GCR_MAX;
-                else gcr_desired += LED_GCR_STEP;
-                if (led_animation_breathing) gcr_breathe = gcr_desired;
+        case KC_CAPS:
+            if (record ->event.pressed) {
+                is_caps_lock_active = !is_caps_lock_active;
             }
-            return false;
-        case L_BRD:
-            if (record->event.pressed) {
-                if (LED_GCR_STEP > gcr_desired) gcr_desired = 0;
-                else gcr_desired -= LED_GCR_STEP;
-                if (led_animation_breathing) gcr_breathe = gcr_desired;
-            }
-            return false;
-        case L_PTN:
-            if (record->event.pressed) {
-                if (led_animation_id == led_setups_count - 1) led_animation_id = 0;
-                else led_animation_id++;
-            }
-            return false;
-        case L_PTP:
-            if (record->event.pressed) {
-                if (led_animation_id == 0) led_animation_id = led_setups_count - 1;
-                else led_animation_id--;
-            }
-            return false;
-        case L_PSI:
-            if (record->event.pressed) {
-                led_animation_speed += ANIMATION_SPEED_STEP;
-            }
-            return false;
-        case L_PSD:
-            if (record->event.pressed) {
-                led_animation_speed -= ANIMATION_SPEED_STEP;
-                if (led_animation_speed < 0) led_animation_speed = 0;
-            }
-            return false;
-        case L_T_MD:
-            if (record->event.pressed) {
-                led_lighting_mode++;
-                if (led_lighting_mode > LED_MODE_MAX_INDEX) led_lighting_mode = LED_MODE_NORMAL;
-            }
-            return false;
-        case L_T_ONF:
-            if (record->event.pressed) {
-                led_enabled = !led_enabled;
-                I2C3733_Control_Set(led_enabled);
-            }
-            return false;
-        case L_ON:
-            if (record->event.pressed) {
-                led_enabled = 1;
-                I2C3733_Control_Set(led_enabled);
-            }
-            return false;
-        case L_OFF:
-            if (record->event.pressed) {
-                led_enabled = 0;
-                I2C3733_Control_Set(led_enabled);
-            }
-            return false;
-        case L_T_BR:
-            if (record->event.pressed) {
-                led_animation_breathing = !led_animation_breathing;
-                if (led_animation_breathing) {
-                    gcr_breathe = gcr_desired;
-                    led_animation_breathe_cur = BREATHE_MIN_STEP;
-                    breathe_dir = 1;
-                }
-            }
-            return false;
-        case L_T_PTD:
-            if (record->event.pressed) {
-                led_animation_direction = !led_animation_direction;
+            return true;
+        case U_T_AUTO:
+            if (record->event.pressed && MODS_SHIFT && MODS_CTRL) {
+                TOGGLE_FLAG_AND_PRINT(usb_extra_manual, "USB extra port manual mode");
             }
             return false;
         case U_T_AGCR:
@@ -187,105 +164,131 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
+        case RGB_TOG:
+            if (record->event.pressed) {
+              switch (rgb_matrix_get_flags()) {
+                case LED_FLAG_ALL: {
+                    rgb_matrix_set_flags(LED_FLAG_KEYLIGHT);
+                    rgb_matrix_set_color_all(0, 0, 0);
+                  }
+                  break;
+                case LED_FLAG_KEYLIGHT: {
+                    rgb_matrix_set_flags(LED_FLAG_UNDERGLOW);
+                    rgb_matrix_set_color_all(0, 0, 0);
+                  }
+                  break;
+                case LED_FLAG_UNDERGLOW: {
+                    rgb_matrix_set_flags(LED_FLAG_NONE);
+                    rgb_matrix_disable_noeeprom();
+                  }
+                  break;
+                default: {
+                    rgb_matrix_set_flags(LED_FLAG_ALL);
+                    rgb_matrix_enable_noeeprom();
+                  }
+                  break;
+              }
+            }
+            return false;
         default:
             return true; //Process all other keycodes normally
     }
 }
 
-led_instruction_t led_instructions[] = {
-    //LEDs are normally inactive, no processing is performed on them
-    //Flags are used in matching criteria for an LED to be active and indicate how to color it
-    //Flags can be found in tmk_core/protocol/arm_atsam/led_matrix.h (prefixed with LED_FLAG_)
-    //LED IDs can be found in config_led.h in the keyboard's directory
-    //Examples are below
+void set_layer_color(int layer) {
 
-    //All LEDs use the user's selected pattern (this is the factory default)
-    { .flags = LED_FLAG_USE_ROTATE_PATTERN },
+    int min_led = 0;
+    int max_led = DRIVER_LED_TOTAL;
+    if (rgb_matrix_get_flags() == LED_FLAG_UNDERGLOW) {
+        // skip key leds
+        min_led = 67;
+    } else if (rgb_matrix_get_flags() == LED_FLAG_KEYLIGHT) {
+        max_led = 66;
+    }
 
-    //When layer1 is active: edge is blue; F keys are red; LED controls are green; Navigation & media are blue; Misc/Debug are yellow
-    // Blue edge
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        .id0 = 0x00000000, .id1 = 0x00000000, .id2 = 0xFFFFFFF8, .id3 = 0x000003FF,
-        .b = 255,
-        .layer = 1
-    },
-    // Red F1 keys
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // keys 2 - 13 0000 0000 0000 0000 0001 1111 1111 1110
-        .id0 = 0x00001FFE, .id1 = 0x00000000, .id2 = 0x00000000, .id3 = 0x00000000,
-        .r = 255,
-        .layer = 1
-    },
-    // Green LED Controls
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // keys 16, 17, 18, 19, 32: 0000 0000 0000 0111 1000 0000 0000 0000
-        // keys 33, 34, 46, 47, 48: 0000 0000 0000 0000 1110 0000 0000 0011
-        .id0 = 0x80078000, .id1 = 0x0000E003, .id2 = 0x00000000, .id3 = 0x00000000,
-        .g = 255,
-        .layer = 1
-    },
-    // Blue Nav & Media Controls
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // id0 keys 15, 26, 27, 28, 30: 0010 1110 0000 0000 0100 0000 0000 0000
-        // id1 keys 44, 57: 0000 0001 0000 0000 0000 1000 0000 0000
-        // id2 keys 65, 66, 67: 0000 0000 0000 0000 0000 0000 0000 0111
-        .id0 = 0x2E004000, .id1 = 0x01000800, .id2 = 0x00000007, .id3 = 0x00000000,
-        .b = 255,
-        .layer = 1
-    },
-    // Yellow Misc/Debug
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // 24, 50, 51
-        // id0 keys 24: 0000 0000 1000 0000 0000 0000 0000 0000
-        // id1 keys 50, 51: 0000 0000 0000 0110 0000 0000 0000 0000
-        .id0 = 0x00800000, .id1 = 0x00060000, .id2 = 0x00000000, .id3 = 0x00000000,
-        .r = 255, .g = 255,
-        .layer = 1
-    },
+    // skip layer _QWERTY for non_solid effects
+    if (layer == _QWERTY && rgb_matrix_get_mode() != RGB_MATRIX_SOLID_COLOR) {
+        return;
+    }
+    for (int i = min_led; i < max_led; i++) {
+        RGB rgb = {
+            .r = pgm_read_byte(&ledmap[layer][i][0]),
+            .g = pgm_read_byte(&ledmap[layer][i][1]),
+            .b = pgm_read_byte(&ledmap[layer][i][2]),
+        };
+        if (rgb.r || rgb.g || rgb.b) {
+            float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
+            rgb_matrix_set_color(i, f * rgb.r, f * rgb.g, f * rgb.b);
+        } else {
+            // default is 0xFFFFFF so should always have rgb set
+        }
+    }
+}
 
-    // When layer 2 is active: edge is green; number keys are red; operator keys are yellow
-    // Green edge
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        .id0 = 0x00000000, .id1 = 0x00000000, .id2 = 0xFFFFFFF8, .id3 = 0x000003FF,
-        .g = 255,
-        .layer = 2
-    },
-    // Red num keys
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // 22, 23, 24, 37, 38, 39, 49, 50, 51, 62
-        // id0 keys 22, 23, 24: 0000 0000 1110 0000 0000 0000 0000 0000
-        // id1 keys 37, 38, 39, 51, 52, 53, 54, 62: 0010 0000 0011 1100 0000 0000 0111 0000
-        .id0 = 0x00E00000, .id1 = 0x203C0070, .id2 = 0x00000000, .id3 = 0x00000000,
-        .r = 255,
-        .layer = 2
-    },
-    // Blue operator keys
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // 9, 12, 13, 43, 52, 53
-        // id0 keys 9, 12, 13: 0000 0000 0000 0000 0001 1001 0000 0000
-        // id1 keys 43, 55: 0000 0000 0100 0000 0000 0100 0000 0000
-        .id0 = 0x00001900, .id1 = 0x00400400, .id2 = 0x00000000, .id3 = 0x00000000,
-        .b = 255,
-        .layer = 2
-    },
-    // Yellow Fn key
-    {
-        .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB,
-        // 64
-        // id1 keys 64: 1000 0000 0000 0000 0000 0000 0000 0000
-        .id0 = 0x00000000, .id1 = 0x80000000, .id2 = 0x00000000, .id3 = 0x00000000,
-        .r = 255, .g = 255,
-        .layer = 2
-    },
 
-    //end must be set to 1 to indicate end of instruction set
-     { .end = 1 }
-};
+// TODO figure out how to set color when not in SOLID mode (e.g. reactively to previous color)
+// this works for SOLID mode, and keylight/backlight only modes
+// but is broken for any non-solid mode (calling the default doesn't work)
+void set_capslock_color(void) {
+    RGB on_rgb;
+    RGB off_rgb;
+
+    switch(rgb_matrix_get_mode()) {
+        case RGB_MATRIX_SOLID_COLOR:
+
+          off_rgb.r = RGB_SOLID_VALUE_RED;
+          off_rgb.g = RGB_SOLID_VALUE_GREEN;
+          off_rgb.b = RGB_SOLID_VALUE_BLUE;
+
+          // if solid color setting is RGB_WHITE then chose red;
+          // otherwise take "opposite" color
+          if (off_rgb.r == 255 && off_rgb.b == 255 && off_rgb.g == 255) {
+              on_rgb.r = 255;
+              on_rgb.g = 0;
+              on_rgb.b = 0;
+          } else {
+              on_rgb.r = 255 - on_rgb.r;
+              on_rgb.g = 255 - on_rgb.g;
+              on_rgb.b = 255 - on_rgb.b;
+          }
+          break;
+        default:
+          on_rgb.r = on_rgb.g = on_rgb.b = 255;
+          off_rgb.r = off_rgb.g = off_rgb.b = 0;
+    }
+
+
+    led_flags_t flags = rgb_matrix_get_flags();
+
+    // prevent flicker if we're in keylight or underglow modes
+    if (flags == LED_FLAG_KEYLIGHT || flags == LED_FLAG_UNDERGLOW) {
+        // capslock will either be white or off in these modes
+        if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
+            rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on_rgb.r, on_rgb.g, on_rgb.b);
+        } else {
+            rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, off_rgb.r, off_rgb.g, off_rgb.b);
+        }
+    } else if (flags != LED_FLAG_NONE) {
+        // capslock will either be red or white in solid colour mode
+        if (rgb_matrix_get_mode() == RGB_MATRIX_SOLID_COLOR) {
+            if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
+                rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on_rgb.r, on_rgb.g, on_rgb.b);
+            } else {
+                rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, off_rgb.r, off_rgb.g, off_rgb.b);
+            }
+        } else {
+            // use Alt's default otherwise
+            led_matrix_indicators();
+        }
+    }
+}
+
+void rgb_matrix_indicators_user(void) {
+    if (g_suspend_state ||
+        rgb_matrix_get_flags() == LED_FLAG_NONE) {
+        return;
+    }
+    set_layer_color(get_highest_layer(layer_state));
+
+    set_capslock_color();
+}

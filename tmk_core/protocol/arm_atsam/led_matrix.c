@@ -311,22 +311,9 @@ void led_matrix_indicators(void) {
                 (led_map[i].scan == USB_LED_KANA_SCANCODE && (kbled & (1 << USB_LED_KANA))) ||
 #endif  // KANA
                 (0)) {
-                if (led_animation_id == 7) {
-                    if (led_buffer[i].r == 255 && led_buffer[i].g == 255 && led_buffer[i].b == 255) {
-                        // switch to red
-                        led_buffer[i].g = 0;
-                        led_buffer[i].b = 0;
-                    } else {
-                        // switch back to white
-                        led_buffer[i].r = 255;
-                        led_buffer[i].g = 255;
-                        led_buffer[i].b = 255;
-                    }
-                } else {
-                    led_buffer[i].r = 255 - led_buffer[i].r;
-                    led_buffer[i].g = 255 - led_buffer[i].g;
-                    led_buffer[i].b = 255 - led_buffer[i].b;
-                }
+                led_buffer[i].r = 255 - led_buffer[i].r;
+                led_buffer[i].g = 255 - led_buffer[i].g;
+                led_buffer[i].b = 255 - led_buffer[i].b;
             }
         }
     }
