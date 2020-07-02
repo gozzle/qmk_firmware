@@ -1,32 +1,34 @@
 # pragma once
 
-// set time held before Mod-Tab key sends mod code
-#define TAPPING_TERM 200
-
-// permissive hold: if holding down a Mod-Tap key while pressing another, it
-// acts a a mod, even within the tapping term
-#define PERMISSIVE_HOLD
-
+// optimisations for boot time
 #ifndef NO_DEBUG
 #define NO_DEBUG
 #endif
-
 #ifndef NO_PRINT
 #define NO_PRINT
 #endif
 
+// Tapdance behaviour
+// set time held before Mod-Tab key sends mod code
+#define TAPPING_TERM 200
+// permissive hold: if holding down a Mod-Tap key while pressing another, it
+// acts a a mod, even within the tapping term
+#define PERMISSIVE_HOLD
 
 // RGB settings
+#define RGB_MATRIX_KEYPRESSES         // reacts to keypresses
+#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR // Sets the default mode, if none has been set
 
-
+// Enabled effects
 // #define DISABLE_RGB_MATRIX_NONE
 // #define DISABLE_RGB_MATRIX_SOLID_COLOR     // Static single hue, no speed support
+// #define DISABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT    // Static gradient left to right, speed controls how much gradient changes
+// ---- requires RGB_MATRIX_KEYPRESSES or RGB_MATRIX_KEYRELEASES
+// #define DISABLE_RGB_MATRIX_SOLID_REACTIVE      // Static single hue, pulses keys hit to shifted hue then fades to current hue
+
+// Disabled effects
 #define DISABLE_RGB_MATRIX_ALPHAS_MODS         // Static dual hue, speed is hue for secondary hue
 #define DISABLE_RGB_MATRIX_GRADIENT_UP_DOWN    // Static gradient top to bottom, speed controls how much gradient changes
-
-
-// #define DISABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT    // Static gradient left to right, speed controls how much gradient changes
-
 #define DISABLE_RGB_MATRIX_BREATHING           // Single hue brightness cycling animation
 #define DISABLE_RGB_MATRIX_BAND_SAT        // Single hue band fading saturation scrolling left to right
 #define DISABLE_RGB_MATRIX_BAND_VAL        // Single hue band fading brightness scrolling left to right
@@ -50,13 +52,8 @@
 // ---- requires RGB_MATRIX_FRAMEBUFFER_EFFECTS
 #define DISABLE_RGB_MATRIX_TYPING_HEATMAP      // How hot is your WPM!
 #define DISABLE_RGB_MATRIX_DIGITAL_RAIN        // That famous computer simulation
-
 // ---- requires RGB_MATRIX_KEYPRESSES or RGB_MATRIX_KEYRELEASES
 #define DISABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE   // Pulses keys hit to hue & value then fades value out
-
-
-// #define DISABLE_RGB_MATRIX_SOLID_REACTIVE      // Static single hue, pulses keys hit to shifted hue then fades to current hue
-
 #define DISABLE_RGB_MATRIX_SOLID_REACTIVE_WIDE       // Hue & value pulse near a single key hit then fades value out
 #define DISABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE  // Hue & value pulse near multiple key hits then fades value out
 #define DISABLE_RGB_MATRIX_SOLID_REACTIVE_CROSS      // Hue & value pulse the same column and row of a single key hit then fades value out
@@ -67,10 +64,5 @@
 #define DISABLE_RGB_MATRIX_MULTISPLASH         // Full gradient & value pulse away from multiple key hits then fades value out
 #define DISABLE_RGB_MATRIX_SOLID_SPLASH        // Hue & value pulse away from a single key hit then fades value out
 #define DISABLE_RGB_MATRIX_SOLID_MULTISPLASH   // Hue & value pulse away from multiple key hits then fades value out
-
+//
 #define DISABLE_RGB_MATRIX_EFFECT_MAX
-
-
-// startup options
-#define RGB_MATRIX_KEYPRESSES         // reacts to keypresses
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR // Sets the default mode, if none has been set

@@ -1,14 +1,5 @@
 #include QMK_KEYBOARD_H
 
-#define RED {RGB_RED}
-#define BLUE {RGB_BLUE}
-#define GREEN {RGB_GREEN}
-#define YELLOW {RGB_YELLOW}
-
-#define DEFAULT_SOLID RGB_WHITE
-
-RGB solid_rgb_value;
-
 enum alt_layers {
     _QWERTY = 0,
     _FUNCTIONS,
@@ -60,43 +51,52 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     */
 };
 
+
+#define RED {RGB_RED}
+#define BLUE {RGB_BLUE}
+#define GREEN {RGB_GREEN}
+#define YELLOW {RGB_YELLOW}
+
 #ifdef _______
 #undef _______
-#define _______ {DEFAULT_SOLID}
+#define _______ {RGB_WHITE}
 
+// static led mappings for layers
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
-    [_QWERTY] = {
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
-        _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, \
-        // Underglow LEDs
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-        _______, _______, _______, _______, _______, _______, _______, _______
-    },
+    /*
+     [_QWERTY] = {
+         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+         _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, \
+         // Underglow LEDs
+         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+         _______, _______, _______, _______, _______, _______, _______, _______
+     },
+    */
     [_FUNCTIONS] = {
-        _______, RED    ,   RED    ,   RED    ,   RED    ,   RED    ,    RED    ,    RED    , RED    , RED    , RED    ,   RED    , RED    , _______, BLUE    , \
-        _______, GREEN    , GREEN    , GREEN    , GREEN    , GREEN    ,  _______,    _______, YELLOW    ,_______,BLUE    , BLUE    , BLUE    , _______, BLUE    , \
-        _______, GREEN    , GREEN    , GREEN    , GREEN    , GREEN    ,  _______,    _______, _______, _______, _______, _______,          _______, BLUE    , \
-        _______, GREEN    , _______,   _______,   _______,   YELLOW    , YELLOW    , _______, _______, _______, _______, _______,          BLUE    , _______, \
-        _______, _______, _______,                            _______,                            _______, _______, BLUE    , BLUE    , BLUE    , \
+        _______, RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , _______, BLUE   , \
+        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, BLUE   , \
+        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, _______,          _______, BLUE   , \
+        _______, GREEN  , _______, _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, _______,          BLUE   , _______, \
+        _______, _______, _______,                            _______,                            _______, _______, BLUE   , BLUE   , BLUE   , \
         // Underglow LEDs
-        BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , \
-        BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , \
-        BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE    , BLUE
+        BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , \
+        BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , \
+        BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE
     },
     [_NUMPAD] = {
-        _______, _______, _______, _______, _______, _______, _______, _______, BLUE    ,_______, _______, BLUE    ,BLUE    ,_______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, BLUE   , _______, _______, BLUE   , BLUE   , _______, _______, \
         _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , _______, _______, _______, _______, _______, _______, \
-        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , _______, _______, _______,          BLUE    ,_______, \
-        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , RED    , BLUE    ,_______,          _______, _______, \
-        _______, _______, _______,                            RED    ,                            _______, YELLOW    ,_______,_______,_______, \
+        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , _______, _______, _______,          BLUE   , _______, \
+        _______, _______, _______, _______, _______, _______, RED    , RED    , RED    , RED    , BLUE   , _______,          _______, _______, \
+        _______, _______, _______,                            RED    ,                            _______, YELLOW , _______, _______, _______, \
         // Underglow LEDs
-        GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , \
-        GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , \
-        GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN    , GREEN
+        GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , \
+        GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , \
+        GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , GREEN
     }
 };
 
@@ -105,12 +105,32 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
 #endif
 
 
+// returns default rgb_config for the given mode
+rgb_config_t rgb_mode_get_default(uint8_t mode) {
+    rgb_config_t ret;
+    switch(mode) {
+        case RGB_MATRIX_SOLID_COLOR:
+          ret.hsv = (HSV){HSV_WHITE};
+          break;
+        case RGB_MATRIX_SOLID_REACTIVE:
+          ret.hsv = (HSV){HSV_CYAN};
+          break;
+        default:
+          // use red as default
+          ret.hsv = (HSV){HSV_RED};
+    }
+    return ret;
+}
+
+// applys the default rgb_config for the current mode
+void rgb_matrix_set_default(void) {
+    // only set the HSV, since that's all I'm playing with at the moment
+    rgb_matrix_config.hsv = rgb_mode_get_default(rgb_matrix_get_mode()).hsv;
+}
+
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-    uint8_t default_solid_arr[] = {DEFAULT_SOLID};
-    solid_rgb_value.r = default_solid_arr[0];
-    solid_rgb_value.g = default_solid_arr[1];
-    solid_rgb_value.b = default_solid_arr[2];
+    rgb_matrix_set_default();
 };
 
 // Runs constantly in the background, in a loop.
@@ -121,7 +141,7 @@ void matrix_scan_user(void) {
 #define MODS_CTRL  (get_mods() & MOD_BIT(KC_LCTL) || get_mods() & MOD_BIT(KC_RCTRL))
 #define MODS_ALT  (get_mods() & MOD_BIT(KC_LALT) || get_mods() & MOD_BIT(KC_RALT))
 
-// TODO add the ability to change the solid background color
+// process keycodes
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint32_t key_timer;
 
@@ -191,26 +211,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               }
             }
             return false;
+        case RGB_RMOD:
+        case RGB_MOD:
+            if (record->event.pressed) {
+                // process as normal...
+                process_rgb(keycode, record);
+                // then set new default
+                rgb_matrix_set_default();
+            }
+            return false;
         default:
             return true; //Process all other keycodes normally
     }
 }
 
+// set hardcoded layer RGB maps from ledmap
 void set_layer_color(int layer) {
+
+    // skip layer _QWERTY to allow effects
+    if (layer == _QWERTY) { return; }
 
     int min_led = 0;
     int max_led = DRIVER_LED_TOTAL;
     if (rgb_matrix_get_flags() == LED_FLAG_UNDERGLOW) {
-        // skip key leds
+        // skip keylight leds
         min_led = 67;
     } else if (rgb_matrix_get_flags() == LED_FLAG_KEYLIGHT) {
+        // skip underglow leds
         max_led = 67;
     }
 
-    // skip layer _QWERTY for non_solid effects
-    if (layer == _QWERTY && rgb_matrix_get_mode() != RGB_MATRIX_SOLID_COLOR) {
-        return;
-    }
     for (int i = min_led; i < max_led; i++) {
         RGB rgb = {
             .r = pgm_read_byte(&ledmap[layer][i][0]),
@@ -226,36 +256,35 @@ void set_layer_color(int layer) {
     }
 }
 
+// calculate the "on" colour of indicator keys to make them stand out from their
+// off colour.
+HSV get_indicator_on_color(HSV off) {
+    // set opposite in HSV space, except Value which should be 100 if it was
+    // zero before
+    HSV on = {
+        .h = 255 - off.h,
+        .s = 255 - off.s,
+        .v = (off.v == 0) ? 255 : off.v,
+    };
+    return on;
+}
 
-// TODO figure out how to set color when not in SOLID mode (e.g. reactively to previous color)
-// this works for SOLID mode, and keylight/backlight only modes
-// but is broken for any non-solid mode (calling the default doesn't work)
+
+// set caps lock colour based on the current config HSV and flag status
+// could be adapted to handle other indicator lights fairly easily, but my
+// setup doesn't use those.
 void set_capslock_color(void) {
 
-    led_flags_t flags = rgb_matrix_get_flags();
-    float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
-
-    RGB on;
-    RGB off;
-
-    switch(rgb_matrix_get_mode()) {
-        case RGB_MATRIX_SOLID_COLOR:
-          if (HAS_FLAGS(flags, LED_FLAG_KEYLIGHT)) {
-              on.r = f * 255;
-              on.g = on.b = 0;
-              off.r = f * solid_rgb_value.r;
-              off.g = f * solid_rgb_value.g;
-              off.b = f * solid_rgb_value.b;
-          } else {
-              on.r = on.g = on.b = f * 255;
-              off.r = off.g = off.b = 0;
-          }
-          break;
-        default:
-          // TODO find a way to make this the "negative" of the current color
-          on.r = on.g = on.b = f * 255;
-          off = hsv_to_rgb(rgb_matrix_config.hsv);
+    HSV hsv_off = rgb_matrix_config.hsv;
+    // if keylights are off then set the off colour to {0,255,0}
+    // (fully saturated but off. opposite is white.)
+    if (!HAS_FLAGS(rgb_matrix_get_flags(), LED_FLAG_KEYLIGHT)) {
+        hsv_off = (HSV){0, 255, 0};
     }
+    HSV hsv_on = get_indicator_on_color(hsv_off);
+
+    RGB off = hsv_to_rgb(hsv_off);
+    RGB on = hsv_to_rgb(hsv_on);
 
     if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
         rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on.r, on.g, on.b);
@@ -264,12 +293,13 @@ void set_capslock_color(void) {
     }
 }
 
+// Runs every cycle to set the RGB state
 void rgb_matrix_indicators_user(void) {
+    // don't bother if LEDs should be off
     if (g_suspend_state ||
         rgb_matrix_get_flags() == LED_FLAG_NONE) {
         return;
     }
     set_layer_color(get_highest_layer(layer_state));
-
     set_capslock_color();
 }
