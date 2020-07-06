@@ -16,6 +16,26 @@ enum alt_keycodes {
     MD_BOOT,               //Restart into bootloader after hold timeout
 };
 
+// Tap Dance definitions
+
+enum tapdance_actions {
+    TD_GUI_GRV_SHIFT       //one tap sends GUI-Grave; two taps sends GUI-Shift-Grave. Used for window cycling on Mac.
+};
+
+void tapdance_gui_grave_shift(qk_tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        SEND_STRING(SS_LGUI("`"));
+    } else if (state->count == 2) {
+        SEND_STRING(SS_LGUI(SS_LSFT("`")));
+    }
+}
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // tap once for GUI-Grave; tap twice for GUI-Shift-Grave
+    [TD_GUI_GRV_SHIFT] = ACTION_TAP_DANCE_FN(tapdance_gui_grave_shift),
+};
+
+
 keymap_config_t keymap_config;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -28,9 +48,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_FUNCTIONS] = LAYOUT(
         _______, KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
-        _______, RGB_SPD,  RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_VOLU, \
-        _______, RGB_RMOD, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,          _______, KC_VOLD, \
-        _______, KC_GRV,   RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          KC_PGUP, _______, \
+        TD(TD_GUI_GRV_SHIFT), RGB_SPD,  RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_VOLU, \
+        _______, RGB_RMOD, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, KC_GRV,          _______, KC_VOLD, \
+        _______, _______,   RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          KC_PGUP, _______, \
         _______, _______,  _______,                            _______,                            _______, _______, KC_HOME, KC_PGDN, KC_END   \
     ),
     [_NUMPAD] = LAYOUT(
@@ -78,9 +98,9 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     */
     [_FUNCTIONS] = {
         _______, RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , _______, BLUE   , \
-        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, BLUE   , \
-        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, _______,          _______, BLUE   , \
-        _______, BLUE   , GREEN  , _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, _______,          BLUE   , _______, \
+        BLUE   , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, BLUE   , \
+        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, BLUE   ,          _______, BLUE   , \
+        _______, _______, GREEN  , _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, _______,          BLUE   , _______, \
         _______, _______, _______,                            _______,                            _______, _______, BLUE   , BLUE   , BLUE   , \
         // Underglow LEDs
         BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , \
