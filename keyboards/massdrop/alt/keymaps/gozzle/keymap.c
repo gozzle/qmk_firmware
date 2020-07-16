@@ -71,15 +71,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     */
 };
 
+// subjectively this seems more white to me so override default
+#ifdef HSV_WHITE
+#undef HSV_WHITE
+#define HSV_WHITE 80, 112, 255
+#endif
 
-#define RED {RGB_RED}
-#define BLUE {RGB_BLUE}
-#define GREEN {RGB_GREEN}
-#define YELLOW {RGB_YELLOW}
+#define RED {HSV_RED}
+#define BLUE {HSV_BLUE}
+#define GREEN {HSV_GREEN}
+#define YELLOW {HSV_YELLOW}
 
 #ifdef _______
 #undef _______
-#define _______ {RGB_WHITE}
+#define _______ {HSV_WHITE}
 
 // static led mappings for layers
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
@@ -262,16 +267,17 @@ void set_layer_color(int layer) {
     }
 
     for (int i = min_led; i < max_led; i++) {
-        RGB rgb = {
-            .r = pgm_read_byte(&ledmap[layer][i][0]),
-            .g = pgm_read_byte(&ledmap[layer][i][1]),
-            .b = pgm_read_byte(&ledmap[layer][i][2]),
+        HSV hsv = {
+            .h = pgm_read_byte(&ledmap[layer][i][0]),
+            .s = pgm_read_byte(&ledmap[layer][i][1]),
+            .v = pgm_read_byte(&ledmap[layer][i][2]),
         };
+        RGB rgb = hsv_to_rgb(hsv);
         if (rgb.r || rgb.g || rgb.b) {
             float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
             rgb_matrix_set_color(i, f * rgb.r, f * rgb.g, f * rgb.b);
         } else {
-            // default is 0xFFFFFF so should always have rgb set
+            // default is non-null so should always have rgb set
         }
     }
 }
@@ -286,6 +292,13 @@ HSV get_indicator_on_color(HSV off) {
         .s = 255 - off.s,
         .v = (off.v == 0) ? 255 : off.v,
     };
+
+    // override to RED for special case of HSV_WHITE
+    HSV special = (HSV){HSV_WHITE};
+    if (off.h == special.h && off.s == special.s) {
+        on = (HSV){HSV_RED};
+    }
+
     return on;
 }
 
