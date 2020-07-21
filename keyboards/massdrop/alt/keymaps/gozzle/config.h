@@ -15,9 +15,13 @@
 // acts a a mod, even within the tapping term
 #define PERMISSIVE_HOLD
 
+// subjectively this seems more white to me
+#define HSV_WHITE_CUSTOM 80, 112, 255
+
 // RGB settings
 #define RGB_MATRIX_KEYPRESSES         // reacts to keypresses
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR // Sets the default mode, if none has been set
+// #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_SOLID_COLOR // Sets the default mode, if none has been set
+#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CUSTOM_WHITE_SOLID_REACTIVE
 
 // Enabled effects
 // #define DISABLE_RGB_MATRIX_NONE

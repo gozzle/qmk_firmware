@@ -74,12 +74,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     */
 };
 
-// subjectively this seems more white to me so override default
-#ifdef HSV_WHITE
-#undef HSV_WHITE
-#define HSV_WHITE 80, 112, 255
-#endif
-
 #define RED {HSV_RED}
 #define BLUE {HSV_BLUE}
 #define GREEN {HSV_GREEN}
@@ -88,7 +82,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef _______
 #undef _______
-#define _______ {HSV_WHITE}
+#define _______ {HSV_WHITE_CUSTOM}
 
 // static led mappings for layers
 const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
@@ -136,13 +130,18 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
 
 // returns default rgb_config for the given mode
 rgb_config_t rgb_mode_get_default(uint8_t mode) {
-    rgb_config_t ret;
+    rgb_config_t ret = rgb_matrix_config;
     switch(mode) {
         case RGB_MATRIX_SOLID_COLOR:
-          ret.hsv = (HSV){HSV_WHITE};
+          ret.hsv = (HSV){HSV_WHITE_CUSTOM};
           break;
         case RGB_MATRIX_SOLID_REACTIVE:
           ret.hsv = (HSV){HSV_CYAN};
+          ret.speed = 127;
+          break;
+        case RGB_MATRIX_CUSTOM_WHITE_SOLID_REACTIVE:
+          ret.hsv = (HSV){HSV_RED};
+          ret.speed = 100;
           break;
         default:
           // use red as default
@@ -153,8 +152,7 @@ rgb_config_t rgb_mode_get_default(uint8_t mode) {
 
 // applys the default rgb_config for the current mode
 void rgb_matrix_set_default(void) {
-    // only set the HSV, since that's all I'm playing with at the moment
-    rgb_matrix_config.hsv = rgb_mode_get_default(rgb_matrix_get_mode()).hsv;
+    rgb_matrix_config = rgb_mode_get_default(rgb_matrix_get_mode());
 }
 
 // Runs just one time when the keyboard initializes.
@@ -308,7 +306,7 @@ HSV get_indicator_on_color(HSV off) {
     };
 
     // override to RED for special case of HSV_WHITE
-    HSV special = (HSV){HSV_WHITE};
+    HSV special = (HSV){HSV_WHITE_CUSTOM};
     if (off.h == special.h && off.s == special.s) {
         on = (HSV){HSV_RED};
     }
@@ -323,12 +321,21 @@ HSV get_indicator_on_color(HSV off) {
 void set_capslock_color(void) {
 
     HSV hsv_off = rgb_matrix_config.hsv;
-    // if keylights are off then set the off colour to {0,255,0}
-    // (fully saturated but off. opposite is white.)
-    if (!HAS_FLAGS(rgb_matrix_get_flags(), LED_FLAG_KEYLIGHT)) {
-        hsv_off = (HSV){0, 255, 0};
+    HSV hsv_on;
+
+    if (rgb_matrix_get_mode() == RGB_MATRIX_CUSTOM_WHITE_SOLID_REACTIVE &&
+        HAS_FLAGS(rgb_matrix_get_flags(), LED_FLAG_KEYLIGHT)) {
+        // special case where config is used for highlights, not base colour
+        hsv_off = (HSV){HSV_WHITE_CUSTOM};
+        hsv_on = rgb_matrix_config.hsv;
+    } else {
+        // if keylights are off then set the off colour to {0,255,0}
+        // (fully saturated but off. opposite is white.)
+        if (!HAS_FLAGS(rgb_matrix_get_flags(), LED_FLAG_KEYLIGHT)) {
+            hsv_off = (HSV){0, 255, 0};
+        }
+        hsv_on = get_indicator_on_color(hsv_off);
     }
-    HSV hsv_on = get_indicator_on_color(hsv_off);
 
     RGB off = hsv_to_rgb(hsv_off);
     RGB on = hsv_to_rgb(hsv_on);
