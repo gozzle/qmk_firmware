@@ -13,7 +13,7 @@ enum alt_keycodes {
     DBG_MTRX,              //DEBUG Toggle Matrix Prints
     DBG_KBD,               //DEBUG Toggle Keyboard Prints
     DBG_MOU,               //DEBUG Toggle Mouse Prints
-    MD_BOOT,               //Restart into bootloader after hold timeout
+    MD_BOOT,               //Restart into bootloader after \hold timeout
     // gozzle's custom keymaps
     CTL_DWN,               //Send Ctrl+Down to provide a shortcut for Mac OSX's app exposé
     CTL_UP,                //Send Ctrl+Up
@@ -52,9 +52,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_FUNCTIONS] = LAYOUT(
         _______, KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         TD(TD_GUI_GRV_SHIFT), RGB_SPD,  RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR,_______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_VOLU, \
-        _______, RGB_RMOD, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, KC_GRV,          _______, KC_VOLD, \
-        _______, _______,   RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          CTL_UP, _______, \
-        _______, _______,  _______,                            _______,                            _______, _______, KC_HOME, CTL_DWN, KC_END   \
+        _______, RGB_RMOD, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, KC_GRV,           KC_MNXT, KC_VOLD, \
+        _______, _______,  RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, KC_MPRV,          CTL_UP,  _______, \
+        _______, _______,  _______,                            KC_MEDIA_PLAY_PAUSE,                _______, _______, KC_HOME, CTL_DWN, KC_END   \
     ),
     [_NUMPAD] = LAYOUT(
         _______, _______, _______, _______, _______, _______, _______, _______, KC_PAST, _______, _______, KC_PMNS, KC_PPLS, _______, _______, \
@@ -79,6 +79,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define GREEN {HSV_GREEN}
 #define YELLOW {HSV_YELLOW}
 #define MAGENTA {HSV_MAGENTA}
+#define CYAN {HSV_CYAN}
 
 #ifdef _______
 #undef _______
@@ -100,11 +101,11 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
      },
     */
     [_FUNCTIONS] = {
-        _______, RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , _______, BLUE   , \
-        BLUE   , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, BLUE   , \
-        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, MAGENTA,          _______, BLUE   , \
-        _______, _______, GREEN  , _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, _______,          BLUE   , _______, \
-        _______, _______, _______,                            _______,                            _______, _______, BLUE   , BLUE   , BLUE   , \
+        _______, RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , _______, CYAN   , \
+        BLUE   , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, CYAN   , \
+        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, MAGENTA,          CYAN   , CYAN   , \
+        _______, _______, GREEN  , _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, CYAN   ,          BLUE   , _______, \
+        _______, _______, _______,                            CYAN   ,                            _______, _______, BLUE   , BLUE   , BLUE   , \
         // Underglow LEDs
         BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , \
         BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , BLUE   , \
