@@ -381,8 +381,7 @@ void set_capslock_color(void) {
 // Runs every cycle to set the RGB state
 void rgb_matrix_indicators_user(void) {
     // don't bother if LEDs should be off
-    if (g_suspend_state ||
-        rgb_matrix_get_flags() == LED_FLAG_NONE) {
+    if (rgb_matrix_get_flags() == LED_FLAG_NONE) {
         return;
     }
     set_layer_color(get_highest_layer(layer_state));
