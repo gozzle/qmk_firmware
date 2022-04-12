@@ -17,6 +17,7 @@ enum alt_keycodes {
     // gozzle's custom keymaps
     CTL_DWN,               //Send Ctrl+Down to provide a shortcut for Mac OSX's app exposé
     CTL_UP,                //Send Ctrl+Up
+    QUOT_ALT_GRV,          //KC_QUOT key, with ALT modifier switching to KC_GRV
 };
 
 // Tap Dance definitions
@@ -51,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP, \
-        LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
+        LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, QUOT_ALT_GRV,          KC_ENT,  KC_PGDN, \
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,          KC_UP,   MO(1),  \
         KC_LCTL, KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RGUI, TD(TD_RALT_TG2),  KC_LEFT, KC_DOWN, KC_RGHT  \
     ),
@@ -262,6 +263,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTL_DWN:
             if (record->event.pressed) {
                 tap_code16(LCTL(KC_DOWN));
+            }
+            return false;
+        // custom keycode to make a key behave as KC_QUOT normally, or KC_GRV when ALT is pressed
+        case QUOT_ALT_GRV:
+            if (record->event.pressed) {
+                if (MODS_ALT) {
+                    // unregister alt so we don't send alt-grv
+                    int mods = get_mods();
+                    unregister_code(KC_LALT);
+                    unregister_code(KC_RALT);
+                    // send KC_GRV
+                    register_code(KC_GRV);
+                    // re-register the alt keys
+                    if (mods & MOD_LALT) {
+                        register_code(KC_LALT);
+                    }
+                    if (mods & MOD_RALT) {
+                        register_code(KC_RALT);
+                    }
+                } else {
+                    // send ordinary KC_QUOT
+                    register_code(KC_QUOT);
+                }
             }
             return false;
         default:
