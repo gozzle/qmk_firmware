@@ -17,28 +17,16 @@ enum alt_keycodes {
     // gozzle's custom keymaps
     CTL_DWN,               //Send Ctrl+Down to provide a shortcut for Mac OSX's app exposé
     CTL_UP,                //Send Ctrl+Up
-    QUOT_ALT_GRV,          //KC_QUOT key, with ALT modifier switching to KC_GRV
 };
 
 // Tap Dance definitions
 
 enum tapdance_actions {
-    TD_GUI_GRV_SHIFT,       //one tap sends GUI-Grave; two taps sends GUI-Shift-Grave. Used for window cycling on Mac.
     TD_MNXT_MPRV,
     TD_RALT_TG2,
 };
 
-void tapdance_gui_grave_shift(qk_tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        SEND_STRING(SS_LGUI("`"));
-    } else if (state->count == 2) {
-        SEND_STRING(SS_LGUI(SS_LSFT("`")));
-    }
-}
-
 qk_tap_dance_action_t tap_dance_actions[] = {
-    // tap once for GUI-Grave; tap twice for GUI-Shift-Grave
-    [TD_GUI_GRV_SHIFT] = ACTION_TAP_DANCE_FN(tapdance_gui_grave_shift),
     // tap once for next track; tap twice for previous track
     [TD_MNXT_MPRV] = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_MPRV),
     // require double tap for layer2 toggle, to avoid accidental taps
@@ -52,14 +40,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP, \
-        LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, QUOT_ALT_GRV,          KC_ENT,  KC_PGDN, \
+        LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,          KC_UP,   MO(1),  \
         KC_LCTL, KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RGUI, TD(TD_RALT_TG2),  KC_LEFT, KC_DOWN, KC_RGHT  \
     ),
     [_FUNCTIONS] = LAYOUT(
         _______, KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
-        TD(TD_GUI_GRV_SHIFT), RGB_SPD,  RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_VOLU, \
-        _______, _______, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, KC_GRV,           TD(TD_MNXT_MPRV), KC_VOLD, \
+        _______, RGB_SPD,  RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_VOLU, \
+        _______, _______, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,           TD(TD_MNXT_MPRV), KC_VOLD, \
         _______, _______,  RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          CTL_UP,  _______, \
         _______, _______,  _______,                            KC_MEDIA_PLAY_PAUSE,                _______, _______, KC_HOME, CTL_DWN, KC_END   \
     ),
@@ -109,8 +97,8 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     */
     [_FUNCTIONS] = {
         _______, RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , _______, CYAN   , \
-        BLUE   , GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, CYAN   , \
-        _______, _______, GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, MAGENTA,          CYAN   , CYAN   , \
+        _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, CYAN   , \
+        _______, _______, GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, _______,          CYAN   , CYAN   , \
         _______, _______, GREEN  , _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, _______,          BLUE   , _______, \
         _______, _______, _______,                            CYAN   ,                            _______, _______, BLUE   , BLUE   , BLUE   , \
         // Underglow LEDs
@@ -175,6 +163,19 @@ void matrix_scan_user(void) {
 #define MODS_SHIFT  (get_mods() & MOD_BIT(KC_LSHIFT) || get_mods() & MOD_BIT(KC_RSHIFT))
 #define MODS_CTRL  (get_mods() & MOD_BIT(KC_LCTL) || get_mods() & MOD_BIT(KC_RCTRL))
 #define MODS_ALT  (get_mods() & MOD_BIT(KC_LALT) || get_mods() & MOD_BIT(KC_RALT))
+
+// add key overrides for altered mod-keypress behaviour
+// make alt-quot act as grv
+const key_override_t quot_alt_grv = ko_make_basic(MOD_MASK_ALT, KC_QUOT, KC_GRV); 
+// make alt-z act as grv - same as above but for z. Lets me see which one I prefer using
+const key_override_t z_alt_grv = ko_make_basic(MOD_MASK_ALT, KC_Z, KC_GRV);
+
+// register the key overrides
+const key_override_t **key_overrides = (const key_override_t *[]) {
+    &quot_alt_grv,
+    &z_alt_grv,
+    NULL // Null terminate the array of overrides
+};
 
 // process keycodes
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -263,29 +264,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTL_DWN:
             if (record->event.pressed) {
                 tap_code16(LCTL(KC_DOWN));
-            }
-            return false;
-        // custom keycode to make a key behave as KC_QUOT normally, or KC_GRV when ALT is pressed
-        case QUOT_ALT_GRV:
-            if (record->event.pressed) {
-                if (MODS_ALT) {
-                    // unregister alt so we don't send alt-grv
-                    int mods = get_mods();
-                    unregister_code(KC_LALT);
-                    unregister_code(KC_RALT);
-                    // send KC_GRV
-                    register_code(KC_GRV);
-                    // re-register the alt keys
-                    if (mods & MOD_LALT) {
-                        register_code(KC_LALT);
-                    }
-                    if (mods & MOD_RALT) {
-                        register_code(KC_RALT);
-                    }
-                } else {
-                    // send ordinary KC_QUOT
-                    register_code(KC_QUOT);
-                }
             }
             return false;
         default:
