@@ -40,16 +40,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP, \
-        LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
-        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,          KC_UP,   MO(1),  \
+        MO(1),   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
+        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_CAPS),           KC_UP,   MO(1),  \
         KC_LCTL, KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RGUI, TD(TD_RALT_TG2),  KC_LEFT, KC_DOWN, KC_RGHT  \
     ),
     [_FUNCTIONS] = LAYOUT(
-        _______, KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
+        _______, KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,    KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, KC_MUTE, \
         _______, RGB_SPD,  RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, U_T_AGCR, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_VOLU, \
-        _______, _______, RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______,           TD(TD_MNXT_MPRV), KC_VOLD, \
-        _______, _______,  RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______, _______, _______, _______,          CTL_UP,  _______, \
-        _______, _______,  _______,                            KC_MEDIA_PLAY_PAUSE,                _______, _______, KC_HOME, CTL_DWN, KC_END   \
+        _______, _______,  RGB_VAD, RGB_MOD, RGB_HUD, RGB_SAD, _______, _______, _______,  _______, _______, KC_GRV,           TD(TD_MNXT_MPRV), KC_VOLD, \
+        _______, _______,  RGB_TOG, _______, _______, MD_BOOT, NK_TOGG, _______, _______,  _______, _______, _______,          CTL_UP,  _______, \
+        _______, _______,  _______,                            KC_MEDIA_PLAY_PAUSE,                 _______, _______, KC_HOME, CTL_DWN, KC_END   \
     ),
     [_NUMPAD] = LAYOUT(
         _______, _______, _______, _______, _______, _______, _______, _______, KC_PAST, _______, _______, KC_PMNS, KC_PPLS, _______, _______, \
@@ -98,7 +98,7 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
     [_FUNCTIONS] = {
         _______, RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , RED    , _______, CYAN   , \
         _______, GREEN  , GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, YELLOW , _______, BLUE   , BLUE   , BLUE   , _______, CYAN   , \
-        _______, _______, GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, _______,          CYAN   , CYAN   , \
+        _______, _______, GREEN  , GREEN  , GREEN  , GREEN  , _______, _______, _______, _______, _______, MAGENTA,          CYAN   , CYAN   , \
         _______, _______, GREEN  , _______, _______, YELLOW , YELLOW , _______, _______, _______, _______, _______,          BLUE   , _______, \
         _______, _______, _______,                            CYAN   ,                            _______, _______, BLUE   , BLUE   , BLUE   , \
         // Underglow LEDs
@@ -351,8 +351,12 @@ void set_capslock_color(void) {
 
     if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
         rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, on.r, on.g, on.b);
+        rgb_matrix_set_color(USB_LED_LSHIFT_SCANCODE, on.r, on.g, on.b);
+        rgb_matrix_set_color(USB_LED_RSHIFT_SCANCODE, on.r, on.g, on.b);
     } else {
         rgb_matrix_set_color(USB_LED_CAPS_LOCK_SCANCODE, off.r, off.g, off.b);
+        rgb_matrix_set_color(USB_LED_LSHIFT_SCANCODE, off.r, off.g, off.b);
+        rgb_matrix_set_color(USB_LED_RSHIFT_SCANCODE, off.r, off.g, off.b);
     }
 }
 
