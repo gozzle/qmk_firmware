@@ -14,7 +14,7 @@ uint8_t pause_ticks = 70;
 static HSV WHITE_SOLID_REACTIVE_math(HSV hsv, uint16_t offset) {
   HSV white = (HSV){HSV_WHITE_CUSTOM};
 
-  offset = qsub8(offset, pause_ticks) * 255 / (255 - pause_ticks);
+  offset = ((uint16_t)qsub8(offset, pause_ticks) * 255) / (255 - pause_ticks);
 
   uint8_t hdiff = scale16by8(offset, abs(hsv.h - white.h));
   uint8_t sdiff = scale16by8(offset, abs(hsv.s - white.s));
