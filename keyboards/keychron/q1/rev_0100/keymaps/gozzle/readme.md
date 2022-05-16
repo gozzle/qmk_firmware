@@ -14,6 +14,8 @@ This keymap builds on the keymap by Grayson Carr (gtg465x) but adds a couple opt
 - [gozzle] Added KC_BOOT macro to reboot the keyboard without needing to press the reset
   pin.
 - [gozzle] Disabled Via mode so keymaps can be loaded directly from QMK.
+- [gozzle] INS and DEL keys swapped (personal preference)
+
 - On macOS, F3 opens Mission Control and F4 opens Launchpad without needing to configure shortcuts in System Preferences
 - RGB lighting turns off when the computer sleeps
 - Caps Lock RGB indicator
