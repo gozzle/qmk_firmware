@@ -15,6 +15,7 @@ This keymap builds on the keymap by Grayson Carr (gtg465x) but adds a couple opt
   pin.
 - [gozzle] Disabled Via mode so keymaps can be loaded directly from QMK.
 - [gozzle] INS and DEL keys swapped (personal preference)
+- [gozzle] Added mod-override: CTRL+HOME acts as END
 
 - On macOS, F3 opens Mission Control and F4 opens Launchpad without needing to configure shortcuts in System Preferences
 - RGB lighting turns off when the computer sleeps

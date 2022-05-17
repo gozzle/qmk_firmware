@@ -49,6 +49,13 @@ enum custom_keycodes {
     KC_BOOT,  // restart into bootloader after 500ms hold timeout
 };
 
+// make CTRL+HOME act as END
+const key_override_t home_end_override = ko_make_basic(MOD_MASK_CTRL, KC_HOME, KC_END);
+const key_override_t **key_overrides = (const key_override_t *[]){
+    &home_end_override,
+    NULL // Null terminate the array of overrides
+};
+
 #define KC_MCTL KC_MISSION_CONTROL
 #define KC_LPAD KC_LAUNCHPAD
 #define KC_LTTOG KC_LIGHT_TAB_TOGGLE
