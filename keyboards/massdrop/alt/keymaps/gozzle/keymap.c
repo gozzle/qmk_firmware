@@ -17,7 +17,12 @@ enum alt_keycodes {
     // gozzle's custom keymaps
     CTL_DWN,               //Send Ctrl+Down to provide a shortcut for Mac OSX's app exposé
     CTL_UP,                //Send Ctrl+Up
+    LT_FAST_CAPS,         //Mimics LT(1, KC_CAPS) but bypasses MacOS's enforced 200ms delay
 };
+
+// for custom LT(1, KC_CAPS) macro
+bool is_lt_fast_caps_active = false;
+uint16_t lt_fast_caps_timer = 0;
 
 // Tap Dance definitions
 
@@ -40,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_PGUP, \
-        LT(1, KC_CAPS), KC_A, KC_S, KC_D,   KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
+        LT_FAST_CAPS, KC_A, KC_S,  KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGDN, \
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_CAPS),           KC_UP,   MO(1),  \
         KC_LCTL, KC_LALT, KC_LGUI,                            KC_SPC,                             KC_RGUI, TD(TD_RALT_TG2),  KC_LEFT, KC_DOWN, KC_RGHT  \
     ),
@@ -158,6 +163,12 @@ void matrix_init_user(void) {
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
+    if (is_lt_fast_caps_active) {
+        // flip to _FUNCTIONS layer if LT_FAST_CAPS key is held
+        if (timer_elapsed(lt_fast_caps_timer) >= TAP_HOLD_CAPS_DELAY) {
+            layer_on(_FUNCTIONS);
+        }
+    }
 };
 
 #define MODS_SHIFT  (get_mods() & MOD_BIT(KC_LSHIFT) || get_mods() & MOD_BIT(KC_RSHIFT))
@@ -264,6 +275,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case CTL_DWN:
             if (record->event.pressed) {
                 tap_code16(LCTL(KC_DOWN));
+            }
+            return false;
+        case LT_FAST_CAPS:
+            if (record->event.pressed) {
+                is_lt_fast_caps_active = true;
+                lt_fast_caps_timer = timer_read();
+            } else {
+                is_lt_fast_caps_active = false;
+                if (timer_elapsed(lt_fast_caps_timer) < TAP_HOLD_CAPS_DELAY) {
+                    tap_code16(KC_CAPS);
+                }
+                if (layer_state_is(_FUNCTIONS)) {
+                    layer_off(_FUNCTIONS);
+                }
             }
             return false;
         default:

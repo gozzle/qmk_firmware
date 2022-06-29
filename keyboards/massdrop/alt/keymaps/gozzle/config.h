@@ -15,6 +15,8 @@
 // acts a a mod, even within the tapping term
 #define PERMISSIVE_HOLD
 
+#define TAP_HOLD_CAPS_DELAY 80
+
 // subjectively this seems more white to me
 #define HSV_WHITE_CUSTOM 80, 112, 255
 
